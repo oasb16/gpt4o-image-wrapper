@@ -10,7 +10,7 @@ st.set_page_config(page_title="GPT-4o Image Generator", layout="centered")
 openai.api_key = st.secrets.get("OPENAI_API_KEY")
 
 def generate_image(prompt):
-    response = openai.images.generate(
+    response = openai.Image.create(
         model="dall-e-3",
         prompt=prompt,
         size="1024x1024",
