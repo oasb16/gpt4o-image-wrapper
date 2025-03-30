@@ -1,10 +1,11 @@
 import openai
-from streamtoolkit_omkar.config.env import OPENAI_API_KEY
+from modules.env import OPENAI_API_KEY
+
 openai.api_key = OPENAI_API_KEY
 
 def generate_image(prompt):
     response = openai.Image.create(
-        prompt=prompt,
+        prompt=f"A cute {prompt}. Rendered as a cartoon in soft tone.",
         n=1,
         size="1024x1024"
     )
