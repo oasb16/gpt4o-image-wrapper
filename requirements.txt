@@ -1,5 +1,6 @@
 streamlit
-openai
 boto3
-Pillow
-streamtoolkit-omkar @ git+https://github.com/oasb16/streamtoolkit_omkar.git
+openai
+click
+pyjwt
+git+https://github.com/oasb16/streamtoolkit_omkar.git
