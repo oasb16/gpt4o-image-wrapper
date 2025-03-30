@@ -1,3 +1,3 @@
 # GPT-4o Image Wrapper
 
-Uses GPT-4o, AWS S3, and streamtoolkit_omkar as external dependency.
+This Streamlit app generates DALL·E images or uploads photos to S3, using secure secrets management via streamtoolkit_omkar.
