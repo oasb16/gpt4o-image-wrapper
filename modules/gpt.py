@@ -5,7 +5,7 @@ openai.api_key = OPENAI_API_KEY
 
 def generate_image(prompt):
     response = openai.images.generate(
-        prompt=f"A cute ghibliii stylesd {prompt}. Rendered as a cartoon in soft tone.",
+        prompt=f"A cute ghibli-styled image per user request: {prompt}.",
         n=1,
         size="1024x1024"
     )
