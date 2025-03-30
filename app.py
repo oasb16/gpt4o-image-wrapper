@@ -7,7 +7,7 @@ from io import BytesIO
 
 from streamtoolkit_omkar.auth.streamlit_guard import token_input_box, get_user_from_token_ui
 from streamtoolkit_omkar.config.env import OPENAI_API_KEY, AWS_REGION, S3_BUCKET
-
+ 
 openai.api_key = OPENAI_API_KEY
 s3 = boto3.client("s3", region_name=AWS_REGION)
 
