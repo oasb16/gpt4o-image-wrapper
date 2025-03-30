@@ -1,7 +1,8 @@
 # modules/image_gen.py
-import openai
+import openai, st
 from streamtoolkit_omkar.config.env import OPENAI_API_KEY
 
+OPENAI_API_KEY = st.secrets.get(OPENAI_API_KEY)
 openai.api_key = OPENAI_API_KEY
 
 def generate_image(prompt: str) -> str:
@@ -16,4 +17,4 @@ def generate_image(prompt: str) -> str:
         size="1024x1024"
     )
     return response.data[0].url
-    
+
