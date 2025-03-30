@@ -1,6 +1,5 @@
 streamlit
-boto3
 openai
-click
+boto3
 pyjwt
 git+https://github.com/oasb16/streamtoolkit_omkar.git
