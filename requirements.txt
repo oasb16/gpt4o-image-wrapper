@@ -1,3 +1,4 @@
-streamlit
-openai
-boto3
+streamlit==1.31.1
+openai==1.13.3
+streamlit-audio-recorder==0.1.2
+streamtoolkit-omkar @ git+https://github.com/oasb16/streamtoolkit_omkar.git
