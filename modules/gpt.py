@@ -9,4 +9,4 @@ def generate_image(prompt):
         n=1,
         size="1024x1024"
     )
-    return response["data"][0]["url"]
+    return response.data[0].url
