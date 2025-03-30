@@ -11,6 +11,7 @@ st.title("🧠 GPT-4o Image Wrapper + Upload + S3")
 token = token_input_box()
 user = get_user_from_token_ui(token)
 
+
 if user:
     uploaded_file = st.file_uploader("📤 Upload an image (optional)", type=["png", "jpg", "jpeg"])
     prompt = st.text_area("Or enter a text prompt")
