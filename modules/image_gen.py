@@ -1,5 +1,6 @@
 # modules/image_gen.py
-import openai, st
+import openai
+import streamlit as st
 from streamtoolkit_omkar.config.env import OPENAI_API_KEY
 
 OPENAI_API_KEY = st.secrets.get(OPENAI_API_KEY)
