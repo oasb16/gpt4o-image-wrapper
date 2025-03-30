@@ -1,6 +1,5 @@
-# GPT-4o Cloud Wrapper
+# GPT-4o Whisper Image Wrapper
 
-- Accepts text or audio file
-- Generates image
-- Uploads to S3
-- Offers download + Instagram share link
+Text + Whisper audio → DALL·E image → S3 → Share to Instagram
+
+Multi-user support with session UUID.
