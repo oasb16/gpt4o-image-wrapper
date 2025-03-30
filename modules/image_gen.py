@@ -7,7 +7,7 @@ openai.api_key = OPENAI_API_KEY
 
 def generate_image(prompt: str) -> str:
     """Generate Ghibli-style image from prompt using GPT-4o DALL·E."""
-    response = openai.images.generate(
+        response = openai.images.generate(
         prompt=f"Convert this {prompt} into a modern anime style with "
                f"Ghibli influence, clean line art, realistic shading, "
                f"soft pastel tones, and expressive faces. "
