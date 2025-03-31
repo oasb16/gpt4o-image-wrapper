@@ -17,8 +17,7 @@ AWS_SECRET_KEY = st.secrets.get("AWS_SECRET_ACCESS_KEY")
 DYNAMODB_TABLE = st.secrets.get("DYNAMODB_TABLE")
 
 # Initialize Gemini client
-genai.configure(api_key=GEMINI_API_KEY)
-client = genai.Client()
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 # Boto3 S3
 s3 = boto3.client("s3", region_name=AWS_REGION)
