@@ -59,7 +59,7 @@ def generate_image_from_image(s3_url):
         model="dall-e-2",
         image=image_file,
         mask=mask_io,
-        prompt="Studio Ghibli style dreamy anime reinterpretation",
+        prompt=f"Convert this image into a modern anime style with Ghibli influence, clean line art, realistic shading, soft pastel tones, and expressive faces. Inspired by scenes from 'Your Name' and 'Whisper of the Heart'. Emphasize clarity, color harmony, and emotional warmth.",
         n=1,
         size="1024x1024",
         response_format="url"
