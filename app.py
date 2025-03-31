@@ -41,9 +41,11 @@ import requests
 def show_image(source):
     if isinstance(source, str) and source.startswith("http"):
         # Fetch from URL and display
+        print(f"source:  {source}")
         image = Image.open(requests.get(source, stream=True).raw)
         st.image(image, caption="📤 Uploaded Image", use_column_width=True)
     else:
+        print(f"source:  {source}")
         # Assume it's raw bytes
         st.image(source, caption="📤 Uploaded Image", use_column_width=True)
 
