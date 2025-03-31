@@ -64,6 +64,8 @@ def generate_image_from_image(s3_url):
         size="1024x1024",
         response_format="url"
     )
+    
+    st.success(f"GENERATED image: {response.data[0].url}")
 
     return response.data[0].url
 
