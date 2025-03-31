@@ -53,12 +53,13 @@ def generate_edited_image_gemini(image_bytes, prompt_text):
 if st.button("Generate / Upload") and (prompt or uploaded_image):
     with st.spinner("Processing..."):
         if uploaded_image:
-            prompt_text = f"Reanimate the image into and anime style yet immersive and hyper realistic 99% to Studio Ghibli style. \
-                Don't find any existing image to map to, reanimate the scene, exactly same yet completely animated, as if Hayao Miyazaki, Isao Takahata, Toshio Suzuki, Yasuyoshi Tokuma would recreate "
+            prompt_text = f"Transform this photo into Studio Ghibli-style anime with soft pastel coloors, dreamy backgrounds, and whimsical details"
             generate_edited_image_gemini(uploaded_image, prompt_text)
 
             img_bytes = uploaded_image.read()
             file_id = f"user_uploads/{uuid.uuid4()}.png"
+            
+            # AWS S3 worked with CHatGPT OpenAI, but not with this anymore.
             # s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
             # s3_url = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"
             # img_bytes = uploaded_image.read()
