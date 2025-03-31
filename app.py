@@ -48,7 +48,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
 
             img_bytes = uploaded_image.read()
             file_id = f"user_uploads/{uuid.uuid4()}.png"
-            image_url = generate_image_from_image(file_id)
+            image_url = generate_image_from_image(s3_url)
             s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
             s3_url_2 = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"            
 
