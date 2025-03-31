@@ -23,51 +23,7 @@ st.title("🖼️ GPT-4o Prompt/Image to Anime")
 uploaded_image = st.file_uploader("📤 Upload an image (optional)", type=["png", "jpg", "jpeg"])
 prompt = st.text_area("Or enter a text prompt")
 
-# def generate_image_from_image(s3_url):
-#     # image_response = requests.get(s3_url)
-#     # image_file = BytesIO(image_response.content)
-#     # response = openai.images.edit(
-#     #     model="dall-e-2",
-#     #     image=image_file,
-#     #     mask=image_file,
-#     #     prompt=f"Convert this image into a modern anime style with Ghibli influence, clean line art, realistic shading, soft pastel tones, and expressive faces. Inspired by scenes from 'Your Name' and 'Whisper of the Heart'. Emphasize clarity, color harmony, and emotional warmth.",
-#     #     n=1,
-#     #     size="1024x1024",
-#     # )
-#     # st.success(f"generated image: {response.data[0].url}")
-#     # return response.data[0].url
 
-#     image_response = requests.get(s3_url)
-#     if image_response.status_code != 200:
-#         raise ValueError("Failed to fetch image from S3")
-
-#     # 2. Wrap in BytesIO and load image
-#     image_file = BytesIO(image_response.content)
-#     image = Image.open(image_file).convert("RGBA")  # Needed for inpainting
-
-#     # 3. Create simple white mask (same size as image)
-#     white_mask = Image.new("RGBA", image.size, (255, 255, 255, 255))
-#     mask_io = BytesIO()
-#     white_mask.save(mask_io, format="PNG")
-#     mask_io.seek(0)
-
-#     # 4. Rewind image file for upload
-#     image_file.seek(0)
-
-#     # 5. Call OpenAI DALL·E API for inpainting
-#     response = openai.images.edit(
-#         model="dall-e-2",
-#         image=image_file,
-#         mask=mask_io,
-#         prompt=f"Convert this image into a modern anime style with Ghibli influence, clean line art, realistic shading, soft pastel tones, and expressive faces. Inspired by scenes from 'Your Name' and 'Whisper of the Heart'. Emphasize clarity, color harmony, and emotional warmth.",
-#         n=1,
-#         size="1024x1024",
-#         response_format="url"
-#     )
-    
-#     st.success(f"GENERATED image: {response.data[0].url}")
-
-#     return response.data[0].url
 
 from PIL import Image
 import numpy as np
@@ -84,10 +40,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
             s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
             s3_url = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"
 
-            # img_bytes = uploaded_image.read()
-            # file_id = f"user_uploads/{uuid.uuid4()}.png"
-            # image_url = generate_image_from_image(s3_url)
-  
+
             image = Image.open(uploaded_image).convert("RGBA")
             mask = generate_dummy_mask(image.size)
             
