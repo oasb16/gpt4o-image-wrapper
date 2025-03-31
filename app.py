@@ -47,6 +47,8 @@ def generate_edited_image_gemini(image_bytes, prompt_text):
         elif part.inline_data is not None:
             image = Image.open(BytesIO(part.inline_data.data))
             image.show()
+    
+    st.image(image, caption=prompt_text, use_container_width=True)
 
 if st.button("Generate / Upload") and (prompt or uploaded_image):
     with st.spinner("Processing..."):
