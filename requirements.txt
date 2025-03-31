@@ -2,3 +2,5 @@ streamlit
 openai
 boto3
 Pillow
+google-generativeai==0.3.2
+python-dotenv==1.0.1
