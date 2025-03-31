@@ -48,7 +48,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
                 model="dall-e-2",
                 image=open("temp_image.png", "rb"),
                 mask=open("temp_mask.png", "rb"),
-                prompt="Studio Ghibli style version of the uploaded image",
+                prompt="Convert the image into and anime style using immersive realism similar at 99.99% to Studio Ghiblis style but not the same but similar so it’s not infrigment",
                 size="1024x1024",
                 n=1,
             )
