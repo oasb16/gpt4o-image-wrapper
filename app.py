@@ -23,7 +23,7 @@ st.title("🖼️ GPT-4o Prompt/Image to Anime")
 uploaded_image = st.file_uploader("📤 Upload an image (optional)", type=["png", "jpg", "jpeg"])
 prompt = st.text_area("Or enter a text prompt")
 
-def generate_image_from_image(uploaded_image):
+def generate_image_from_image():
     print(f"generating image from s3_url : {uploaded_image}")
     response = openai.images.edit(
         model="dall-e-2",
