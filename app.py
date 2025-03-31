@@ -61,6 +61,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
                 aws_access_key_id=AWS_ACCESS_KEY,
                 aws_secret_access_key=AWS_SECRET_KEY
             )
+            
 
             table = dynamodb.Table(DYNAMODB_TABLE)
             table.put_item(
