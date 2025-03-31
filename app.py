@@ -75,7 +75,8 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
             response = requests.get(s3_url)
             image = Image.open(BytesIO(response.content))
             st.image(image, caption=s3_url_2, use_container_width=True)
-            st.success(f"Uploaded to S3: {s3_url_2}")
+            st.success(f"Uploaded s3_url to S3: {s3_url}")
+            st.success(f"Uploaded s3_url_2 to S3: {s3_url_2}")
 
         if prompt:
             image_url = generate_image(prompt)
