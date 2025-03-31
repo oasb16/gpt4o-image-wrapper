@@ -51,7 +51,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
                 model="dall-e-2",
                 image=open("temp_image.png", "rb"),
                 mask=open("temp_mask.png", "rb"),
-                prompt="Studio Ghibli style version of the uploaded image",
+                prompt="Black the face",
                 size="1024x1024",
                 n=1,
             )
