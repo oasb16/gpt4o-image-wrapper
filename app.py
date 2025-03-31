@@ -53,38 +53,37 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
         if uploaded_image:
             img_bytes = uploaded_image.read()
             file_id = f"user_uploads/{uuid.uuid4()}.png"
-            s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
-            s3_url = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"
-            
-
             prompt_text = "Create Studio Ghibili Animation for this imare with 99% match not same to avaoid infringement"
-            img_bytes = uploaded_image.read()
-            file_id = f"user_uploads/{uuid.uuid4()}.png"
-            image_url = generate_edited_image_gemini(file_id, prompt_text)
-            s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
-            s3_url_2 = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"            
+            generate_edited_image_gemini(file_id, prompt_text)
+            # s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
+            # s3_url = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"
+            # img_bytes = uploaded_image.read()
+            # file_id = f"user_uploads/{uuid.uuid4()}.png"
+            #image_url = generate_edited_image_gemini(file_id, prompt_text)
+            # s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
+            # s3_url_2 = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"            
 
-            dynamodb = boto3.resource(
-                'dynamodb',
-                region_name=AWS_REGION,
-                aws_access_key_id=AWS_ACCESS_KEY,
-                aws_secret_access_key=AWS_SECRET_KEY
-            )
+            # dynamodb = boto3.resource(
+            #     'dynamodb',
+            #     ra                        egion_name=AWS_REGION,
+            #     aws_access_key_id=AWS_ACCESS_KEY,
+            #     aws_secret_access_key=AWS_SECRET_KEY
+            # )
             
 
-            table = dynamodb.Table(DYNAMODB_TABLE)
-            table.put_item(
-                Item={
-                    "email": "123",
-                    "uploaded_image": s3_url,
-                    "generated_image": s3_url_2,
-                }
-            ) 
-            response = requests.get(s3_url)
-            image = Image.open(BytesIO(response.content))
-            st.image(image, caption=s3_url_2, use_container_width=True)
-            st.success(f"Uploaded s3_url to S3: {s3_url}")
-            st.success(f"Uploaded s3_url_2 to S3: {s3_url_2}")
+            # table = dynamodb.Table(DYNAMODB_TABLE)
+            # table.put_item(
+            #     Item={
+            #         "email": "123",
+            #         "uploaded_image": s3_url,
+            #         "generated_image": s3_url_2,
+            #     }
+            # ) 
+            # response = requests.get(s3_url)
+            #image = Image.open(BytesIO(response.content))
+            #st.image(image, caption=s3_url_2, use_container_width=True)
+            #st.success(f"Uploaded s3_url to S3: {s3_url}")
+            #st.success(f"Uploaded s3_url_2 to S3: {s3_url_2}")
 
         if prompt:
             image_url = generate_image(prompt)
