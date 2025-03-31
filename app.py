@@ -1,5 +1,6 @@
 
 import streamlit as st
+import requests
 import openai
 import boto3
 import uuid
@@ -71,8 +72,9 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
                     "generated_image": s3_url_2,
                 }
             ) 
-
-            st.image(s3_url_2, caption=s3_url_2, use_container_width=True)
+            response = requests.get(s3_url)
+            image = Image.open(BytesIO(response.content))
+            st.image(image, caption=s3_url_2, use_container_width=True)
             st.success(f"Uploaded to S3: {s3_url_2}")
 
         if prompt:
