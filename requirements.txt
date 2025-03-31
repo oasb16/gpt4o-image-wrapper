@@ -1,4 +1,3 @@
 streamlit==1.31.1
 openai==1.13.3
-streamlit_webrtc==0.45.0
-streamtoolkit-omkar @ git+https://github.com/oasb16/streamtoolkit_omkar.git
+st-audiorec
