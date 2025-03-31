@@ -53,7 +53,7 @@ def generate_edited_image_gemini(image_bytes, prompt_text):
 if st.button("Generate / Upload") and (prompt or uploaded_image):
     with st.spinner("Processing..."):
         if uploaded_image:
-            prompt_text = f"Convert the image into and anime style using immersive realism similar at 99.99% to Studio Ghiblis style\
+            prompt_text = f"Convert the image into and anime style using immersive realism similar at 89% to Studio Ghiblis style\
                  but not the same but similar so it’s not infrigment"
             generate_edited_image_gemini(uploaded_image, prompt_text)
 
