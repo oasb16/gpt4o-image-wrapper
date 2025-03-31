@@ -53,7 +53,7 @@ def generate_edited_image_gemini(image_bytes, prompt_text):
 if st.button("Generate / Upload") and (prompt or uploaded_image):
     with st.spinner("Processing..."):
         if uploaded_image:
-            prompt_text = f"Transform this photo into Studio Ghibli-style anime with soft pastel coloors, dreamy backgrounds, and whimsical details"
+            prompt_text = f"Transform this photo into a hand-drawn animated illustration. Apply watercolor techniques, soft organic lines, and a warm color palette. Maintain the original image's composition while adding a magical, dreamlike aesthetic. Emphasize gentle color transitions and a whimsical, slightly surreal atmosphere typical of classic Japanese animation"
             generate_edited_image_gemini(uploaded_image, prompt_text)
 
             img_bytes = uploaded_image.read()
