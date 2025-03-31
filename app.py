@@ -9,7 +9,10 @@ from io import BytesIO
 from streamtoolkit_omkar.config.env import OPENAI_API_KEY, AWS_REGION, S3_BUCKET
 from modules.image_gen import generate_image
 from modules.utils import generate_instagram_link, generate_download_link
+from google import genai
+from google.genai import types
 
+GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
 AWS_ACCESS_KEY=st.secrets.get("AWS_ACCESS_KEY")
 AWS_SECRET_KEY=st.secrets.get("AWS_SECRET_ACCESS_KEY")
 DYNAMODB_TABLE=st.secrets.get("DYNAMODB_TABLE")
@@ -23,16 +26,15 @@ st.title("🖼️ GPT-4o Prompt/Image to Anime")
 uploaded_image = st.file_uploader("📤 Upload an image (optional)", type=["png", "jpg", "jpeg"])
 prompt = st.text_area("Or enter a text prompt")
 
-from google import genai
-from google.genai import types
-GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
+
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 def generate_edited_image_gemini(image_bytes, prompt_text):
-
+    
+    image = Image.open(image_bytes)
     response = client.models.generate_content(
         model="gemini-2.0-flash-exp-image-generation",
-        contents=[prompt_text, image_bytes],
+        contents=[prompt_text, image],
         config=types.GenerateContentConfig(
         response_modalities=['Text', 'Image']
         )
