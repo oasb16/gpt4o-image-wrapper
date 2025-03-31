@@ -71,7 +71,17 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
                     "generated_image": s3_url_2,
                 }
             )
-            st.image(image_url, caption="📤 Uploaded Image")
+            from PIL import Image
+            import requests
+
+            def show_image(source):
+                if isinstance(source, str) and source.startswith("http"):
+                    # Fetch from URL and display
+                    image = Image.open(requests.get(source, stream=True).raw)
+                    st.image(image, caption="📤 Uploaded Image", use_column_width=True)
+                else:
+                    # Assume it's raw bytes
+                    st.image(source, caption="📤 Uploaded Image", use_column_width=True)
             st.success(f"Uploaded to S3: {s3_url}")
 
         if prompt:
