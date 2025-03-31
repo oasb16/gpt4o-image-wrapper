@@ -1,91 +1,90 @@
+
 import streamlit as st
-import os
-import uuid
-import boto3
 import requests
+import openai
+import boto3
+import uuid
 from PIL import Image
 from io import BytesIO
-from google import genai
-from google.genai import types
-from streamtoolkit_omkar.config.env import AWS_REGION, S3_BUCKET
-from modules.utils import generate_download_link, generate_instagram_link
+from streamtoolkit_omkar.config.env import OPENAI_API_KEY, AWS_REGION, S3_BUCKET
+from modules.image_gen import generate_image
+from modules.utils import generate_instagram_link, generate_download_link
 
-# Credentials from Streamlit Secrets
-GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
-AWS_ACCESS_KEY = st.secrets.get("AWS_ACCESS_KEY")
-AWS_SECRET_KEY = st.secrets.get("AWS_SECRET_ACCESS_KEY")
-DYNAMODB_TABLE = st.secrets.get("DYNAMODB_TABLE")
+AWS_ACCESS_KEY=st.secrets.get("AWS_ACCESS_KEY")
+AWS_SECRET_KEY=st.secrets.get("AWS_SECRET_ACCESS_KEY")
+DYNAMODB_TABLE=st.secrets.get("DYNAMODB_TABLE")
 
-# Initialize Gemini client
-client = genai.Client(api_key=GEMINI_API_KEY)
-
-# Boto3 S3
+openai.api_key = OPENAI_API_KEY
 s3 = boto3.client("s3", region_name=AWS_REGION)
 
 st.set_page_config(page_title="GPT-4o Image Wrapper", layout="centered")
-st.title("🖼️ Upload to Anime (Gemini 2.0 Flash)")
+st.title("🖼️ GPT-4o Prompt/Image to Anime")
 
-uploaded_image = st.file_uploader("📤 Upload an image", type=["png", "jpg", "jpeg"])
-prompt = st.text_area("Describe how to transform the image")
+uploaded_image = st.file_uploader("📤 Upload an image (optional)", type=["png", "jpg", "jpeg"])
+prompt = st.text_area("Or enter a text prompt")
+
+from google import genai
+from google.genai import types
+GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 def generate_edited_image_gemini(image_bytes, prompt_text):
-    # Save to local temp file
-    temp_filename = f"temp_{uuid.uuid4()}.png"
-    with open(temp_filename, "wb") as f:
-        f.write(image_bytes)
 
-    # Upload image to Gemini file store
-    gemini_file = client.files.upload(file=temp_filename)
-
-    # Construct contents for generation
-    contents = [
-        types.Content(
-            role="user",
-            parts=[
-                types.Part.from_uri(
-                    file_uri=gemini_file.uri,
-                    mime_type=gemini_file.mime_type,
-                ),
-                types.Part.from_text(text=prompt_text),
-            ],
+    response = client.models.generate_content(
+        model="gemini-2.0-flash-exp-image-generation",
+        contents=[prompt_text, image_bytes],
+        config=types.GenerateContentConfig(
+        response_modalities=['Text', 'Image']
         )
-    ]
+    )
 
-    config = types.GenerateContentConfig(response_mime_type="text/plain")
-    result_text = ""
-    for chunk in client.models.generate_content_stream(
-        model="gemini-2.0-flash",
-        contents=contents,
-        config=config,
-    ):
-        result_text += chunk.text
+    for part in response.candidates[0].content.parts:
+        if part.text is not None:
+            print(part.text)
+        elif part.inline_data is not None:
+            image = Image.open(BytesIO(part.inline_data.data))
+            image.show()
 
-    return result_text
-
-if st.button("Generate"):
-    if uploaded_image and prompt:
-        st.info("Generating Ghibli-style description via Gemini...")
-        with st.spinner("Uploading to S3 and Gemini..."):
-            # Upload original to S3
+if st.button("Generate / Upload") and (prompt or uploaded_image):
+    with st.spinner("Processing..."):
+        if uploaded_image:
             img_bytes = uploaded_image.read()
             file_id = f"user_uploads/{uuid.uuid4()}.png"
             s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
             s3_url = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"
+            
 
-            st.image(img_bytes, caption="📤 Uploaded Image")
+            prompt_text = "Create Studio Ghibili Animation for this imare with 99% match not same to avaoid infringement"
+            img_bytes = uploaded_image.read()
+            file_id = f"user_uploads/{uuid.uuid4()}.png"
+            image_url = generate_edited_image_gemini(file_id, prompt_text)
+            s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
+            s3_url_2 = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"            
 
-            try:
-                # Gemini generation
-                st.info("Generating Ghibli-style description via Gemini...")
-                gemini_response = generate_edited_image_gemini(img_bytes, prompt)
+            dynamodb = boto3.resource(
+                'dynamodb',
+                region_name=AWS_REGION,
+                aws_access_key_id=AWS_ACCESS_KEY,
+                aws_secret_access_key=AWS_SECRET_KEY
+            )
+            
 
-                st.markdown(f"**Gemini Response:**\n\n{gemini_response}")
-                st.markdown(generate_download_link(s3_url), unsafe_allow_html=True)
-                st.markdown(generate_instagram_link(s3_url), unsafe_allow_html=True)
+            table = dynamodb.Table(DYNAMODB_TABLE)
+            table.put_item(
+                Item={
+                    "email": "123",
+                    "uploaded_image": s3_url,
+                    "generated_image": s3_url_2,
+                }
+            ) 
+            response = requests.get(s3_url)
+            image = Image.open(BytesIO(response.content))
+            st.image(image, caption=s3_url_2, use_container_width=True)
+            st.success(f"Uploaded s3_url to S3: {s3_url}")
+            st.success(f"Uploaded s3_url_2 to S3: {s3_url_2}")
 
-            except Exception as e:
-                st.error("Gemini image editing failed.")
-                st.exception(e)
-
-    else:
-        st.warning("Please upload an image and enter a prompt.")
+        if prompt:
+            image_url = generate_image(prompt)
+            st.image(image_url, caption="🎨 Generated Image")
+            st.markdown(generate_download_link(image_url), unsafe_allow_html=True)
+            st.markdown(generate_instagram_link(image_url), unsafe_allow_html=True)
