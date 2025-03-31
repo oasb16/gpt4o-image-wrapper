@@ -12,7 +12,8 @@ from modules.utils import generate_instagram_link, generate_download_link
 from google import genai
 from google.genai import types
 
-GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
+AWS_REGION=st.secrets.get("AWS_REGION")
+GEMINI_API_KEY=st.secrets.get("GEMINI_API_KEY")
 AWS_ACCESS_KEY=st.secrets.get("AWS_ACCESS_KEY")
 AWS_SECRET_KEY=st.secrets.get("AWS_SECRET_ACCESS_KEY")
 DYNAMODB_TABLE=st.secrets.get("DYNAMODB_TABLE")
