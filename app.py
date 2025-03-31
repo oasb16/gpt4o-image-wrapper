@@ -22,12 +22,12 @@ st.title("🖼️ GPT-4o Prompt/Image to Anime")
 uploaded_image = st.file_uploader("📤 Upload an image (optional)", type=["png", "jpg", "jpeg"])
 prompt = st.text_area("Or enter a text prompt")
 
-def generate_image_from_image(img):
-    print(f"generating image from s3_url : {img}")
+def generate_image_from_image(uploaded_image):
+    print(f"generating image from s3_url : {uploaded_image}")
     response = openai.images.edit(
         model="dall-e-2",
-        image=open(img, "rb"),
-        mask=open(img, "rb"),
+        image=open(uploaded_image, "rb"),
+        mask=open(uploaded_image, "rb"),
         prompt=f"Convert this image into a modern anime style with Ghibli influence, clean line art, realistic shading, soft pastel tones, and expressive faces. Inspired by scenes from 'Your Name' and 'Whisper of the Heart'. Emphasize clarity, color harmony, and emotional warmth.",
         n=1,
         size="1024x1024",
@@ -51,7 +51,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
             print(f"img_bytes : {img_bytes}")
             file_id = f"user_uploads/{uuid.uuid4()}.png"
             print(f"file_id : {file_id}")
-            image_url = generate_image_from_image(file_id)
+            image_url = generate_image_from_image
             s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
             s3_url_2 = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"            
 
