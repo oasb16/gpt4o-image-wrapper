@@ -36,7 +36,7 @@ def generate_image_from_image(s3_url):
         n=1,
         size="1024x1024",
     )
-    print("generated {response.data[0].url}")
+    st.success(f"generated image: {response.data[0].url}")
     return response.data[0].url
 
 if st.button("Generate / Upload") and (prompt or uploaded_image):
