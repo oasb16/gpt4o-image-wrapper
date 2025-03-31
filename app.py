@@ -26,7 +26,7 @@ prompt = st.text_area("Or enter a text prompt")
 def generate_image_from_image(s3_url):
     image_response = requests.get(s3_url)
     image_file = BytesIO(image_response.content)
-    st.success(f"Uploaded s3_url to S3: {image1}")
+    st.success(f"Uploaded s3_url to S3: {image_file}")
     response = openai.images.edit(
         model="dall-e-2",
         image=open(image_file, "rb"),
