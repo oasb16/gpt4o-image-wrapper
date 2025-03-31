@@ -24,17 +24,47 @@ uploaded_image = st.file_uploader("📤 Upload an image (optional)", type=["png"
 prompt = st.text_area("Or enter a text prompt")
 
 def generate_image_from_image(s3_url):
+    # image_response = requests.get(s3_url)
+    # image_file = BytesIO(image_response.content)
+    # response = openai.images.edit(
+    #     model="dall-e-2",
+    #     image=image_file,
+    #     mask=image_file,
+    #     prompt=f"Convert this image into a modern anime style with Ghibli influence, clean line art, realistic shading, soft pastel tones, and expressive faces. Inspired by scenes from 'Your Name' and 'Whisper of the Heart'. Emphasize clarity, color harmony, and emotional warmth.",
+    #     n=1,
+    #     size="1024x1024",
+    # )
+    # st.success(f"generated image: {response.data[0].url}")
+    # return response.data[0].url
+
     image_response = requests.get(s3_url)
+    if image_response.status_code != 200:
+        raise ValueError("Failed to fetch image from S3")
+
+    # 2. Wrap in BytesIO and load image
     image_file = BytesIO(image_response.content)
+    image = Image.open(image_file).convert("RGBA")  # Needed for inpainting
+
+    # 3. Create simple white mask (same size as image)
+    white_mask = Image.new("RGBA", image.size, (255, 255, 255, 255))
+    mask_io = BytesIO()
+    white_mask.save(mask_io, format="PNG")
+    mask_io.seek(0)
+
+    # 4. Rewind image file for upload
+    image_file.seek(0)
+
+    # 5. Call OpenAI DALL·E API for inpainting
     response = openai.images.edit(
         model="dall-e-2",
         image=image_file,
-        mask=image_file,
-        prompt=f"Convert this image into a modern anime style with Ghibli influence, clean line art, realistic shading, soft pastel tones, and expressive faces. Inspired by scenes from 'Your Name' and 'Whisper of the Heart'. Emphasize clarity, color harmony, and emotional warmth.",
+        mask=mask_io,
+        prompt="Studio Ghibli style dreamy anime reinterpretation",
         n=1,
         size="1024x1024",
+        response_format="url"
     )
-    st.success(f"generated image: {response.data[0].url}")
+
     return response.data[0].url
 
 if st.button("Generate / Upload") and (prompt or uploaded_image):
