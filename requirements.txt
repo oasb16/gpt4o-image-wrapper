@@ -1,5 +1,4 @@
-
-streamlit==1.31.1
+streamlit==1.44.0
 openai==1.13.3
 boto3
 Pillow

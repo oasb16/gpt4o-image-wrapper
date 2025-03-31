@@ -1,68 +1,35 @@
 
 import streamlit as st
+import openai
+import boto3
+import uuid
 from PIL import Image
 from io import BytesIO
-import uuid
-import boto3
-import openai
-import os
+from streamtoolkit_omkar.config.env import OPENAI_API_KEY, AWS_REGION, S3_BUCKET
+from modules.image_gen import generate_image
+from modules.utils import generate_instagram_link, generate_download_link
 
-# Config from Streamlit secrets
-openai.api_key = st.secrets["OPENAI_API_KEY"]
-AWS_REGION = st.secrets["AWS_REGION"]
-S3_BUCKET = st.secrets["S3_BUCKET"]
-AWS_ACCESS_KEY_ID = st.secrets["AWS_ACCESS_KEY_ID"]
-AWS_SECRET_ACCESS_KEY = st.secrets["AWS_SECRET_ACCESS_KEY"]
+openai.api_key = OPENAI_API_KEY
+s3 = boto3.client("s3", region_name=AWS_REGION)
 
-# AWS client
-s3 = boto3.client("s3", region_name=AWS_REGION,
-                  aws_access_key_id=AWS_ACCESS_KEY_ID,
-                  aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+st.set_page_config(page_title="GPT-4o Image Wrapper", layout="centered")
+st.title("🖼️ GPT-4o Prompt/Image to Anime")
 
-def upload_to_s3(file_bytes, filename):
-    s3.upload_fileobj(file_bytes, S3_BUCKET, filename)
-    return f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{filename}"
+uploaded_image = st.file_uploader("📤 Upload an image (optional)", type=["png", "jpg", "jpeg"])
+prompt = st.text_area("Or enter a text prompt")
 
-def generate_image(prompt):
-    response = openai.images.generate(
-        model="dall-e-3",
-        prompt=f"Convert this {prompt} into a modern anime style with Ghibli influence, clean line art, realistic shading, soft pastel tones, and expressive faces. Inspired by scenes from 'Your Name' and 'Whisper of the Heart'. Emphasize clarity, color harmony, and emotional warmth.",
-        n=1,
-        size="1024x1024"
-    )
-    return response.data[0].url
+if st.button("Generate / Upload") and (prompt or uploaded_image):
+    with st.spinner("Processing..."):
+        if uploaded_image:
+            img_bytes = uploaded_image.read()
+            file_id = f"user_uploads/{uuid.uuid4()}.png"
+            s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
+            s3_url = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"
+            st.image(img_bytes, caption="📤 Uploaded Image")
+            st.success(f"Uploaded to S3: {s3_url}")
 
-st.set_page_config(page_title="🎨 GPT-4o Ghibli Generator", layout="centered")
-st.title("🎨 Upload or Prompt to Ghibli Image")
-
-uploaded_file = st.file_uploader("📤 Upload an image (optional)", type=["png", "jpg", "jpeg"])
-prompt = st.text_input("📝 Or enter a prompt for the image")
-
-final_prompt = prompt.strip()
-
-if uploaded_file:
-    uploaded_bytes = uploaded_file.read()
-    try:
-        uploaded_image = Image.open(BytesIO(uploaded_bytes))
-        st.image(uploaded_image, caption="📤 Uploaded Image", use_container_width=True)
-    except Exception as e:
-        st.error("⚠️ Couldn't read the uploaded file as an image. Please upload a valid PNG or JPG.")
-        st.exception(e)
-        uploaded_bytes = None  # Don't upload to S3 if invalid
-
-if st.button("🚀 Generate / Upload"):
-    if uploaded_file:
-        filename = f"uploads/{uuid.uuid4()}.png"
-        url = upload_to_s3(BytesIO(uploaded_bytes), filename)
-        st.success(f"✅ Uploaded to S3: {url}")
-
-    if final_prompt:
-        with st.spinner("🎨 Generating..."):
-            try:
-                image_url = generate_image(final_prompt)
-                st.image(image_url, caption="✨ Ghibli-style by GPT-4o", use_container_width=True)
-                st.markdown(f"[📥 Download Image]({image_url})", unsafe_allow_html=True)
-                st.markdown(f"[📸 Share on Instagram](https://instagram.com)", unsafe_allow_html=True)
-            except Exception as e:
-                st.error("Something went wrong.")
-                st.exception(e)
+        if prompt:
+            image_url = generate_image(prompt)
+            st.image(image_url, caption="🎨 Generated Image")
+            st.markdown(generate_download_link(image_url), unsafe_allow_html=True)
+            st.markdown(generate_instagram_link(image_url), unsafe_allow_html=True)
