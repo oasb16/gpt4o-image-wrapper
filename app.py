@@ -42,8 +42,13 @@ final_prompt = prompt.strip()
 
 if uploaded_file:
     uploaded_bytes = uploaded_file.read()
-    uploaded_image = Image.open(BytesIO(uploaded_bytes))
-    st.image(uploaded_image, caption="📤 Uploaded Image", use_container_width=True)
+    try:
+        uploaded_image = Image.open(BytesIO(uploaded_bytes))
+        st.image(uploaded_image, caption="📤 Uploaded Image", use_container_width=True)
+    except Exception as e:
+        st.error("⚠️ Couldn't read the uploaded file as an image. Please upload a valid PNG or JPG.")
+        st.exception(e)
+        uploaded_bytes = None  # Don't upload to S3 if invalid
 
 if st.button("🚀 Generate / Upload"):
     if uploaded_file:
