@@ -17,7 +17,7 @@ def generate_image(prompt):
 
 
 def generate_image_from_image(img):
-    print(f"generating image : {img}")
+    print(f"generating image from s3_url : {img}")
     response = openai.images.edit(
         model="dall-e-2",
         image=open(img, "rb"),
