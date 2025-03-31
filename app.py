@@ -84,7 +84,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
                 }
             )
 
-            show_image(s3_url_2)
+            show_image(image_url)
             st.success(f"Uploaded to S3: {s3_url_2}")
 
         if prompt:
