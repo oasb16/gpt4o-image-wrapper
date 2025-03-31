@@ -64,6 +64,7 @@ def generate_edited_image_gemini(image_bytes, prompt_text):
 
 if st.button("Generate"):
     if uploaded_image and prompt:
+        st.info("Generating Ghibli-style description via Gemini...")
         with st.spinner("Uploading to S3 and Gemini..."):
             # Upload original to S3
             img_bytes = uploaded_image.read()
