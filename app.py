@@ -6,7 +6,7 @@ import uuid
 from PIL import Image
 from io import BytesIO
 from streamtoolkit_omkar.config.env import OPENAI_API_KEY, AWS_REGION, S3_BUCKET
-from modules.image_gen import generate_image, generate_image_from_image
+from modules.image_gen import generate_image
 from modules.utils import generate_instagram_link, generate_download_link
 
 AWS_ACCESS_KEY=st.secrets.get("AWS_ACCESS_KEY")
