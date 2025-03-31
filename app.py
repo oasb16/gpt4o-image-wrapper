@@ -72,7 +72,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
                     "generated_image": s3_url_2,
                 }
             ) 
-            response = requests.get(s3_url)
+            response = requests.get(s3_url_2)
             image = Image.open(BytesIO(response.content))
             st.image(image, caption=s3_url_2, use_container_width=True)
             st.success(f"Uploaded to S3: {s3_url_2}")
