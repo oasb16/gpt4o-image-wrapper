@@ -22,7 +22,7 @@ openai.api_key = OPENAI_API_KEY
 s3 = boto3.client("s3", region_name=AWS_REGION)
 
 st.set_page_config(page_title="GPT-4o Image Wrapper", layout="centered")
-st.title("🖼️ You deserve an almost-ghiblied version of you!")
+st.title("🖼️ You deserve an almost-ghibli-fied version of you!")
 
 uploaded_image = st.file_uploader("📤 Upload an image here (optional)", type=["png", "jpg", "jpeg"])
 prompt = st.text_area("Or write a text prompt to ghiblify it")
