@@ -10,7 +10,7 @@ from modules.image_gen import generate_image
 from modules.utils import generate_instagram_link, generate_download_link
 
 AWS_ACCESS_KEY=st.secrets.get("AWS_ACCESS_KEY")
-AWS_SECRET_KEY=st.secrets.get("AWS_SECRET_KEY")
+AWS_SECRET_KEY=st.secrets.get("AWS_SECRET_ACCESS_KEY")
 DYNAMODB_TABLE=st.secrets.get("DYNAMODB_TABLE")
 
 openai.api_key = OPENAI_API_KEY
