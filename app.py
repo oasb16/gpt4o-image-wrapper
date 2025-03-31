@@ -48,16 +48,17 @@ def generate_edited_image_gemini(image_bytes, prompt_text):
             image = Image.open(BytesIO(part.inline_data.data))
             image.show()
     
-    st.image(image, caption=prompt_text, use_container_width=True)
+    st.image(image, caption="https://www.linkedin.com/in/omkarsb7/ ", use_container_width=True)
 
 if st.button("Generate / Upload") and (prompt or uploaded_image):
     with st.spinner("Processing..."):
         if uploaded_image:
-            img_bytes = uploaded_image.read()
-            file_id = f"user_uploads/{uuid.uuid4()}.png"
             prompt_text = f"Convert the image into and anime style using immersive realism similar at 99.99% to Studio Ghiblis style\
                  but not the same but similar so it’s not infrigment"
             generate_edited_image_gemini(uploaded_image, prompt_text)
+
+            img_bytes = uploaded_image.read()
+            file_id = f"user_uploads/{uuid.uuid4()}.png"
             # s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
             # s3_url = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"
             # img_bytes = uploaded_image.read()
@@ -88,7 +89,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
             #st.success(f"Uploaded s3_url to S3: {s3_url}")
             #st.success(f"Uploaded s3_url_2 to S3: {s3_url_2}")
 
-        if prompt:
+        elif prompt:
             image_url = generate_image(prompt)
             st.image(image_url, caption="🎨 Generated Image")
             st.markdown(generate_download_link(image_url), unsafe_allow_html=True)
