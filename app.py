@@ -55,7 +55,7 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
         if uploaded_image:
             img_bytes = uploaded_image.read()
             file_id = f"user_uploads/{uuid.uuid4()}.png"
-            prompt_text = f"Create Studio Ghibili Animation for this image with 99.99% match or same to avoid infringement"
+            prompt_text = f"Create Studio Ghibili Animation for this image with 99.99% match or similar to avoid infringement"
             generate_edited_image_gemini(uploaded_image, prompt_text)
             # s3.upload_fileobj(BytesIO(img_bytes), S3_BUCKET, file_id)
             # s3_url = f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{file_id}"
