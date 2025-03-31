@@ -35,6 +35,18 @@ def generate_image_from_image(uploaded_image):
     print("generated {response.data[0].url}")
     return response.data[0].url
 
+from PIL import Image
+import requests
+
+def show_image(source):
+    if isinstance(source, str) and source.startswith("http"):
+        # Fetch from URL and display
+        image = Image.open(requests.get(source, stream=True).raw)
+        st.image(image, caption="📤 Uploaded Image", use_column_width=True)
+    else:
+        # Assume it's raw bytes
+        st.image(source, caption="📤 Uploaded Image", use_column_width=True)
+
 if st.button("Generate / Upload") and (prompt or uploaded_image):
     with st.spinner("Processing..."):
         if uploaded_image:
@@ -71,18 +83,9 @@ if st.button("Generate / Upload") and (prompt or uploaded_image):
                     "generated_image": s3_url_2,
                 }
             )
-            from PIL import Image
-            import requests
 
-            def show_image(source):
-                if isinstance(source, str) and source.startswith("http"):
-                    # Fetch from URL and display
-                    image = Image.open(requests.get(source, stream=True).raw)
-                    st.image(image, caption="📤 Uploaded Image", use_column_width=True)
-                else:
-                    # Assume it's raw bytes
-                    st.image(source, caption="📤 Uploaded Image", use_column_width=True)
-            st.success(f"Uploaded to S3: {s3_url}")
+            show_image(s3_url_2)
+            st.success(f"Uploaded to S3: {s3_url_2}")
 
         if prompt:
             image_url = generate_image(prompt)
