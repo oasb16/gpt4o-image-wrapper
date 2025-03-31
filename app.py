@@ -24,14 +24,13 @@ uploaded_image = st.file_uploader("📤 Upload an image (optional)", type=["png"
 prompt = st.text_area("Or enter a text prompt")
 
 def generate_image_from_image(s3_url):
-    response = requests.get(s3_url)
-    image = Image.open(BytesIO(response.content))
-    image1 = Image.open(requests.get(image, stream=True).raw)
+    image_response = requests.get(s3_url)
+    image_file = BytesIO(image_response.content)
     st.success(f"Uploaded s3_url to S3: {image1}")
     response = openai.images.edit(
         model="dall-e-2",
-        image=open(image1, "rb"),
-        mask=open(image1, "rb"),
+        image=open(image_file, "rb"),
+        mask=open(image_file, "rb"),
         prompt=f"Convert this image into a modern anime style with Ghibli influence, clean line art, realistic shading, soft pastel tones, and expressive faces. Inspired by scenes from 'Your Name' and 'Whisper of the Heart'. Emphasize clarity, color harmony, and emotional warmth.",
         n=1,
         size="1024x1024",
